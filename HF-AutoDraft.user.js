@@ -33,7 +33,7 @@
 		}
 	}
 
-	let messageBox, tid;
+	let messageBox, tid, replyButton;
 	const pathName = window.location.pathname;
 	const urlParams = new URLSearchParams(window.location.search);
 
@@ -46,13 +46,15 @@
 
 		if (pathName === "/showthread.php") {
 			messageBox = qs("textarea[name='message'][id='message']");
+			replyButton = qs("#quick_reply_submit");
 		}
 
 		if (pathName === "/newreply.php") {
 			messageBox = qs("textarea:not(#message)");
+			replyButton = qs("input[type='submit'][name='submit'][value='Post Reply']");
 		}
 
-		return !(!messageBox || !tid);
+		return !(!messageBox || !tid || !replyButton);
 	}
 
 	const restore = () => {
@@ -95,6 +97,11 @@
 
 			console.log(`Draft saved! - ${tid}`);
 		}));
+
+		replyButton.addEventListener('click', () => {
+			localStorage.removeItem(`hackforums-auto-draft-${tid}`);
+			console.log(`Draft removed because you've replied! - ${tid}`);
+		});
 	}
 
 	if (!init()) {
